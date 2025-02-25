@@ -1,0 +1,66 @@
+Here the javascript code :
+
+
+const time_el = document.querySelector('.time');
+const start_btn = document.getElementById('start');
+const stop_btn = document.getElementById('stop');
+const reset_btn = document.getElementById('reset');
+const ring = document.querySelector('.progress-ring');
+
+let seconds = 0;
+let interval = null;
+let isRunning = false;
+
+function updateDisplay() {
+    let hrs = Math.floor(seconds / 3600);
+    let mins = Math.floor((seconds % 3600) / 60);
+    let secs = seconds % 60;
+
+
+    hrs = hrs < 10 ? '0' + hrs : hrs;
+    mins = mins < 10 ? '0' + mins : mins;
+    secs = secs < 10 ? '0' + secs : secs;
+
+    time_el.textContent = `${hrs}:${mins}:${secs}`;
+    updateProgressRing();
+}
+
+function updateProgressRing() {
+    const progress = (seconds % 60) * 6; 
+    ring.style.background = `conic-gradient(
+        green ${progress}deg,
+        rgba(255, 255, 255, 0.2) ${progress}deg
+    )`;
+}
+
+function startTimer() {
+    if (!isRunning) {
+        isRunning = true;
+        interval = setInterval(() => {
+            seconds++;
+            updateDisplay();
+        }, 1000);
+        start_btn.classList.add('active');
+    }
+}
+
+function stopTimer() {
+    if (isRunning) {
+        isRunning = false;
+        clearInterval(interval);
+        start_btn.classList.remove('active');
+    }
+}
+
+function resetTimer() {
+    stopTimer();
+    seconds = 0;
+    updateDisplay();
+    ring.style.background = 'conic-gradient(rgba(255, 255, 255, 0.2) 0deg, rgba(255, 255, 255, 0.2) 360deg)';
+}
+
+start_btn.addEventListener('click', startTimer);
+stop_btn.addEventListener('click', stopTimer);
+reset_btn.addEventListener('click', resetTimer);
+
+updateDisplay();
